@@ -42,18 +42,23 @@ def save_cred(ip, line):
         entry = None
 
     if entry is None:
-        parts = raw.split(':', 2)
-        if len(parts) == 3:
+        parts = raw.split(':', 3)
+        if len(parts) == 4:
+            hostname, embedded_ip, user, passwd = parts
+        elif len(parts) == 3:
             hostname, user, passwd = parts
+            embedded_ip = None
         elif len(parts) == 2:
             hostname = "unknown"
             user, passwd = parts
+            embedded_ip = None
         else:
             hostname, user, passwd = "unknown", "unknown", raw
+            embedded_ip = None
 
         entry = {
             "timestamp": datetime.utcnow().isoformat(),
-            "ip": ip,
+            "ip": embedded_ip or ip,
             "hostname": hostname,
             "username": user,
             "password": passwd,
